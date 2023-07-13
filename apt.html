@@ -1,0 +1,127 @@
+<html>
+  <div>Id: <input name="id"></div><br />
+  <div>Floor:
+    <input name="fn" value="1">
+    <input type="checkbox" name="fe">
+    <label for="fe">elevator</label>
+  </div><br />
+  <div>Ceiling (cm): <input name="cln" value="280"></div><br />
+  <div>Location:
+    <div>Ok | Good | Awesome</div>
+    <input type="radio" name="loc" value="0">
+    <input type="radio" name="loc" value="1" checked=true>
+    <input type="radio" name="loc" value="2">
+  </div><br />
+  <div>Price thousands per meter: <input name="ppm" value="170"></div><br />
+  <div>Rooms count: <input name="rc" value="1"></div><br />
+  <div>Sunlight:
+    <div>Bad | Ok | Good</div>
+    <input type="radio" name="lgt" value="0">
+    <input type="radio" name="lgt" value="1" checked=true>
+    <input type="radio" name="lgt" value="2">
+  </div><br />
+  <div>Good window view: <input type="checkbox" name="wv"></div><br />
+  <div>Condition:
+    <div>Bad | Ok | Good</div>
+    <input type="radio" name="cnd" value="0">
+    <input type="radio" name="cnd" value="1" checked=true>
+    <input type="radio" name="cnd" value="2">
+  </div><br />
+  <div>Like it!: <input type="checkbox" name="like"></div><br />
+  <div>Or paste json to recalculate:<input name="inp"><button type="button" id="apl">Apply</button><br /><br /></div><br />
+  <button type="button" id="calc">Calculate</button><br /><br />
+  <div>Result: <span id="res" /></div><br />
+  <div>Json data: <span id="json" /></div>
+  <script>
+    var addFloorScore = function() {
+      var floor = document.getElementsByName('fn')[0].value;
+      if (floor == 2) return 4;
+      if (floor == 3) return 3;
+      if (floor == 4) return 1;
+      var elevator = document.getElementsByName('fe')[0].checked;
+      if (elevator) return 2;
+      return 0;
+    }
+    var addCeilingScore = function() {
+      var ceiling = document.getElementsByName('cln')[0].value;
+      if (ceiling > 360) return 4;
+      if (ceiling > 310) return 3;
+      if (ceiling > 270) return 2;
+      if (ceiling > 240) return 1;
+      return 0;
+    }
+    var addLocationScore = function() {
+      return document.querySelector('input[name="loc"]:checked').value;
+    }
+    var addPriceScore = function() {
+      var price = document.getElementsByName('ppm')[0].value;
+      if (price < 140) return 3;
+      if (price < 160) return 2;
+      if (price < 180) return 1;
+      return 0;
+    }
+    var addRoomsScore = function() {
+      return document.getElementsByName('rc')[0].value > 1 ? 2 : 0;
+    }
+    var addSunlightScore = function() {
+      return document.querySelector('input[name="lgt"]:checked').value;
+    }
+    var addWindowScore = function() {
+      return document.getElementsByName('wv')[0].checked ? 1 : 0;
+    }
+    var addConditionScore = function() {
+      return document.querySelector('input[name="cnd"]:checked').value;
+    }
+    var addLikeScore = function() {
+      return document.getElementsByName('like')[0].checked ? 2 : 0;
+    }
+    var printJsonInput = function() {
+      var inputJson = {};
+      inputJson.id = document.getElementsByName('id')[0].value;
+      inputJson.floor = document.getElementsByName('fn')[0].value;
+      inputJson.elevator = document.getElementsByName('fe')[0].checked;
+      inputJson.ceiling = document.getElementsByName('cln')[0].value;
+      inputJson.loc = document.querySelector('input[name="loc"]:checked').value;
+      inputJson.price = document.getElementsByName('ppm')[0].value;
+      inputJson.rooms = document.getElementsByName('rc')[0].value;
+      inputJson.sun = document.querySelector('input[name="lgt"]:checked').value;
+      inputJson.window = document.getElementsByName('wv')[0].checked;
+      inputJson.condition = document.querySelector('input[name="cnd"]:checked').value;
+      inputJson.like = document.getElementsByName('like')[0].checked;
+      document.getElementById('json').innerHTML = JSON.stringify(inputJson);
+    }
+    var calculate = function() {
+      var score = 0;
+      score += +addFloorScore();
+      score += +addCeilingScore();
+      score += +addLocationScore();
+      score += +addPriceScore();
+      score += +addRoomsScore();
+      score += +addSunlightScore();
+      score += +addWindowScore();
+      score += +addConditionScore();
+      score += +addLikeScore();
+      document.getElementById('res').innerHTML = score
+      printJsonInput();
+    }
+    document.getElementById('calc').addEventListener('click', calculate);
+
+    var applyJson = function() {
+      var json = document.getElementsByName('inp')[0].value;
+      var obj = JSON.parse(json);
+      document.getElementsByName('id')[0].value = obj.id;
+      document.getElementsByName('fn')[0].value = obj.floor;
+      document.getElementsByName('fe')[0].checked = obj.elevator;
+      document.getElementsByName('cln')[0].value = obj.ceiling;
+      document.getElementsByName('loc')[obj.loc].checked = true;
+      document.getElementsByName('ppm')[0].value = obj.price;
+      document.getElementsByName('rc')[0].value = obj.rooms;
+      document.getElementsByName('lgt')[+obj.sun].checked = true;
+      document.getElementsByName('wv')[0].checked = obj.window;
+      document.getElementsByName('cnd')[obj.condition].checked = true;
+      document.getElementsByName('like')[0].checked = obj.like;
+    }
+    document.getElementById('apl').addEventListener('click', applyJson);
+  </script>
+
+</html>
