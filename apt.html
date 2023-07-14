@@ -50,7 +50,10 @@ var addFloorScore = function() {
       return 0;
     }
     var addLocationScore = function() {
-      return document.querySelector('input[name="loc"]:checked').value*2 + 1;
+    	var location = document.querySelector('input[name="loc"]:checked').value;
+      if (location == 1) return 3;
+      if (location == 2) return 5;
+      return 0;
     }
     var addPriceScore = function() {
       var price = document.getElementsByName('ppm')[0].value;
