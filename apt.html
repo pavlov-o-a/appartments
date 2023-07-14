@@ -21,6 +21,7 @@
     <input type="radio" name="lgt" value="2">
   </div><br />
   <div>Good window view: <input type="checkbox" name="wv"></div><br />
+  <div>Quick to buy: <input type="checkbox" name="qk" checked=true></div><br />
   <div>Condition:
     <div>Bad | Ok | Good</div>
     <input type="radio" name="cnd" value="0">
@@ -32,7 +33,7 @@
   <div>Result: <span id="res" /></div><br />
   <div>Json data: <span id="json" /></div>
   <script>
-var addFloorScore = function() {
+  var addFloorScore = function() {
       var floor = document.getElementsByName('fn')[0].value;
       if (floor == 2) return 2;
       if (floor == 3) return 2;
@@ -62,29 +63,23 @@ var addFloorScore = function() {
       if (price < 180) return 1;
       return 0;
     }
-    var addRoomsScore = function() {
-      return document.getElementsByName('rc')[0].value > 1 ? 2 : 0;
-    }
-    var addSunlightScore = function() {
-      return document.querySelector('input[name="lgt"]:checked').value;
-    }
-    var addWindowScore = function() {
-      return document.getElementsByName('wv')[0].checked ? 1 : 0;
-    }
-    var addConditionScore = function() {
-      return document.querySelector('input[name="cnd"]:checked').value;
-    }
+    var addRoomsScore = () => document.getElementsByName('rc')[0].value > 1 ? 2 : 0;
+    var addSunlightScore = () => document.querySelector('input[name="lgt"]:checked').value;
+    var addWindowScore = () => document.getElementsByName('wv')[0].checked ? 1 : 0;
+    var addQuickScore = () => document.getElementsByName('qk')[0].checked ? 0 : -2;
+    var addConditionScore = () => document.querySelector('input[name="cnd"]:checked').value;
     var printJsonInput = function() {
       var inputJson = {};
       inputJson.id = document.getElementsByName('id')[0].value;
       inputJson.floor = document.getElementsByName('fn')[0].value;
       inputJson.elevator = document.getElementsByName('fe')[0].checked;
+      inputJson.window = document.getElementsByName('wv')[0].checked;
+      inputJson.quick = document.getElementsByName('qk')[0].checked;
       inputJson.ceiling = document.getElementsByName('cln')[0].value;
       inputJson.loc = document.querySelector('input[name="loc"]:checked').value;
       inputJson.price = document.getElementsByName('ppm')[0].value;
       inputJson.rooms = document.getElementsByName('rc')[0].value;
       inputJson.sun = document.querySelector('input[name="lgt"]:checked').value;
-      inputJson.window = document.getElementsByName('wv')[0].checked;
       inputJson.condition = document.querySelector('input[name="cnd"]:checked').value;
       document.getElementById('json').innerHTML = JSON.stringify(inputJson);
     }
@@ -97,6 +92,7 @@ var addFloorScore = function() {
       score += +addRoomsScore();
       score += +addSunlightScore();
       score += +addWindowScore();
+      score += +addQuickScore();
       score += +addConditionScore();
       document.getElementById('res').innerHTML = score
       printJsonInput();
@@ -109,12 +105,13 @@ var addFloorScore = function() {
       document.getElementsByName('id')[0].value = obj.id;
       document.getElementsByName('fn')[0].value = obj.floor;
       document.getElementsByName('fe')[0].checked = obj.elevator;
+      document.getElementsByName('wv')[0].checked = obj.window;
+      document.getElementsByName('qk')[0].checked = obj.quick;
       document.getElementsByName('cln')[0].value = obj.ceiling;
       document.getElementsByName('loc')[obj.loc].checked = true;
       document.getElementsByName('ppm')[0].value = obj.price;
       document.getElementsByName('rc')[0].value = obj.rooms;
       document.getElementsByName('lgt')[+obj.sun].checked = true;
-      document.getElementsByName('wv')[0].checked = obj.window;
       document.getElementsByName('cnd')[obj.condition].checked = true;
     }
     document.getElementById('apl').addEventListener('click', applyJson);
