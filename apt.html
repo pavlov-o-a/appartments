@@ -58,9 +58,9 @@
     }
     var addPriceScore = function() {
       var price = document.getElementsByName('ppm')[0].value;
-      if (price < 140) return 3;
-      if (price < 160) return 2;
-      if (price < 180) return 1;
+      if (price < 150) return 3;
+      if (price < 170) return 2;
+      if (price < 190) return 1;
       return 0;
     }
     var addRoomsScore = () => document.getElementsByName('rc')[0].value > 1 ? 2 : 0;
