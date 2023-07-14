@@ -27,19 +27,18 @@
     <input type="radio" name="cnd" value="1" checked=true>
     <input type="radio" name="cnd" value="2">
   </div><br />
-  <div>Like it!: <input type="checkbox" name="like"></div><br />
   <div>Or paste json to recalculate:<input name="inp"><button type="button" id="apl">Apply</button><br /><br /></div><br />
   <button type="button" id="calc">Calculate</button><br /><br />
   <div>Result: <span id="res" /></div><br />
   <div>Json data: <span id="json" /></div>
   <script>
-    var addFloorScore = function() {
+var addFloorScore = function() {
       var floor = document.getElementsByName('fn')[0].value;
-      if (floor == 2) return 4;
-      if (floor == 3) return 3;
-      if (floor == 4) return 1;
+      if (floor == 2) return 2;
+      if (floor == 3) return 2;
       var elevator = document.getElementsByName('fe')[0].checked;
-      if (elevator) return 2;
+      if (floor >= 4 && elevator) return 1;
+      if (floor == 4) return 1;
       return 0;
     }
     var addCeilingScore = function() {
@@ -47,11 +46,11 @@
       if (ceiling > 360) return 4;
       if (ceiling > 310) return 3;
       if (ceiling > 270) return 2;
-      if (ceiling > 240) return 1;
+      if (ceiling > 250) return 1;
       return 0;
     }
     var addLocationScore = function() {
-      return document.querySelector('input[name="loc"]:checked').value;
+      return document.querySelector('input[name="loc"]:checked').value*2 + 1;
     }
     var addPriceScore = function() {
       var price = document.getElementsByName('ppm')[0].value;
@@ -72,9 +71,6 @@
     var addConditionScore = function() {
       return document.querySelector('input[name="cnd"]:checked').value;
     }
-    var addLikeScore = function() {
-      return document.getElementsByName('like')[0].checked ? 2 : 0;
-    }
     var printJsonInput = function() {
       var inputJson = {};
       inputJson.id = document.getElementsByName('id')[0].value;
@@ -87,7 +83,6 @@
       inputJson.sun = document.querySelector('input[name="lgt"]:checked').value;
       inputJson.window = document.getElementsByName('wv')[0].checked;
       inputJson.condition = document.querySelector('input[name="cnd"]:checked').value;
-      inputJson.like = document.getElementsByName('like')[0].checked;
       document.getElementById('json').innerHTML = JSON.stringify(inputJson);
     }
     var calculate = function() {
@@ -100,7 +95,6 @@
       score += +addSunlightScore();
       score += +addWindowScore();
       score += +addConditionScore();
-      score += +addLikeScore();
       document.getElementById('res').innerHTML = score
       printJsonInput();
     }
@@ -119,9 +113,7 @@
       document.getElementsByName('lgt')[+obj.sun].checked = true;
       document.getElementsByName('wv')[0].checked = obj.window;
       document.getElementsByName('cnd')[obj.condition].checked = true;
-      document.getElementsByName('like')[0].checked = obj.like;
     }
     document.getElementById('apl').addEventListener('click', applyJson);
   </script>
-
 </html>
